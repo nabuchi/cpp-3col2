@@ -7,12 +7,12 @@
 #include <vector>
 #include <functional>
 #include <ctime>
-#include<boost/random.hpp>
+//#include<boost/random.hpp>
 
 #include "mt.h"
 //#include "md5Main.h"
 using namespace std;
-using namespace boost;
+//using namespace boost;
 
 #ifndef uint32
 #define uint32 unsigned int
@@ -41,6 +41,7 @@ uint32 thash(uint32 m)
     ret = genrand_int32();
     return ret;   
 }
+/*
 uint32 thash2(uint32 m) {
     mt19937 gen(static_cast<unsigned long>(m));
     uniform_int<> dst1(INT_MIN, INT_MAX);
@@ -48,6 +49,7 @@ uint32 thash2(uint32 m) {
     uint32 ret = (uint32)rand1();
     return ret;
 }
+*/
 int main()
 {
     uint32 seed, seed2;
@@ -60,7 +62,6 @@ int main()
     printf( "%u:%u:%u\n", seed, thash(seed), thash(thash(seed)) );
     for(int i=0; i<count; i++) {
         seed = thash(seed); 
-        seed2 = thash2(seed2);
     }
     printf( "%u:%u\n", seed, seed2);
     return 0;

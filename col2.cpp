@@ -9,7 +9,6 @@
 #include <ctime>
 
 #include "mt.h"
-//#include "md5Main.h"
 
 #ifndef uint32
 #define uint32 unsigned int
@@ -57,7 +56,7 @@ struct StartLess
 const uint32 M = pow(2,32*2/3);
 const uint32 N_P = pow(2,32/3);
 const uint32 FUKA = 300;//N_P / 1 
-const int COL = 2;
+const int COL = 3;
 const uint32 L_MAX = 20*pow(2,32/3);
 //const uint32 INT_MAX = 0xffffffff;
 int main()
@@ -112,7 +111,7 @@ int main()
         }
         if( jt >= it+COL ) {//一個多くなかったぴったり
             //========== jtは使っちゃだめ絶対 ==========
-            printf("COL連続見つかった%u=%u  %d\n", (*it)[1], (*(it+1))[1], jt-it);
+            //printf("COL連続見つかった%u=%u  %d\n", (*it)[1], (*(it+1))[1], jt-it);
             // 最大のLを見つける
             uint32 L = 0;
             vector<uint32*>::iterator tt = it;
@@ -126,13 +125,13 @@ int main()
             //(*tt)[0]:start (*tt)[1]:goal
             //(*tt)[0]:注目地点 (*tt)[1]:一個前の値
             for( int l=L; l>=0; l-- ) {
-                if(l%100==0) {printf("%d\n", l);}
-                if(l < 1101) {printf("%d\n", l);}
+                //if(l%100==0) {printf("%d\n", l);}
+                //if(l < 1055) {printf("%d\n", l);}
                 if( !eqlchk.empty() )
                     eqlchk.clear();
                 for( tt=it; tt<=jt-1; ++tt) {
                     if( (*tt)[2]>=l ) {
-                        printf("%u:%u:%u\n", (*tt)[0], (*tt)[1], (*tt)[2]);
+                        //printf("%u:%u:%u\n", (*tt)[0], (*tt)[1], (*tt)[2]);
                         (*tt)[1] = (*tt)[0];
                         (*tt)[0] = thash( (*tt)[0] );
                         eqlchk.push_back( *tt );
@@ -140,27 +139,33 @@ int main()
                 }
                 //同じ値から衝突してないかチェキ
                 //注目してるチェーンがCOL個以上なら
+                map<uint32>
                 if( eqlchk.size() >= COL ) {
-                    printf("入った");
+                    //printf("入った\n\n");
                     //第一要素でソート
                     sort(eqlchk.begin(), eqlchk.end(), StartLess() );
                     //eqlchkを舐める
                     tt = eqlchk.begin();
                     while( tt != eqlchk.end() ) {
+                        //printf("%u\n",(*tt)[0]);
                         vector<uint32*>::iterator ut = tt+1;
                         while( ut != eqlchk.end() && (*ut)[0] == (*tt)[0] )
                             ++ut;
                         //同じ値がCOL個以上あったら
                         if ( ut >= tt+COL ) { //utは使っちゃだめ絶対
                             //出力
-                            while( tt <= ut-1 ) {//utは使っちゃだめ絶対
-                                printf("%u From %u\n",(*tt)[0],(*tt)[1]);
-                                ++tt;
+                            vector<uint32*>::iterator vt = tt;
+                            while( vt <= ut-1 ) {//utは使っちゃだめ絶対
+                                //printf("%u From %u\n",(*vt)[0],(*vt)[1]);
+                                ++vt;
+                                //printf("owari\n");
                             }
+                            //printf("出た\n");
                         }
+                        ++tt;
                     }
                 }//衝突チェック終わり
-                if(l<1100) {printf("入ってない");}
+                //if(l<1055) {printf("入ってない\n");}
             }//長さを変えて衝突を見つける
         }//候補チェーンの探索終わり
         it = jt;
