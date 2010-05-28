@@ -55,7 +55,7 @@ struct StartLess
 
 const uint32 M = pow(2,32*2/3);
 const uint32 N_P = pow(2,32/3);
-const uint32 FUKA = 300;//N_P / 1 
+const uint32 FUKA = 4000;//N_P / 1 
 const int COL = 3;
 const uint32 L_MAX = 20*pow(2,32/3);
 //const uint32 INT_MAX = 0xffffffff;
@@ -78,7 +78,7 @@ int main()
             factor = new uint32[3];
             factor[0] = s;
             factor[1] = a;
-            factor[2] = l;    
+            factor[2] = l;
             table.push_back(factor);
             //if (i%100 == 0) {printf("1.5(%d):%u:%u\n",i,a,l); }
             //printf("1.5(%d):%u:%u\n",i,a,l);
@@ -137,11 +137,10 @@ int main()
                         eqlchk.push_back( *tt );
                     }
                 }
+
                 //同じ値から衝突してないかチェキ
                 //注目してるチェーンがCOL個以上なら
-                map<uint32>
                 if( eqlchk.size() >= COL ) {
-                    //printf("入った\n\n");
                     //第一要素でソート
                     sort(eqlchk.begin(), eqlchk.end(), StartLess() );
                     //eqlchkを舐める
@@ -152,15 +151,24 @@ int main()
                         while( ut != eqlchk.end() && (*ut)[0] == (*tt)[0] )
                             ++ut;
                         //同じ値がCOL個以上あったら
+                        list<uint32> candidate;
+                        candidate.clear();
                         if ( ut >= tt+COL ) { //utは使っちゃだめ絶対
-                            //出力
                             vector<uint32*>::iterator vt = tt;
                             while( vt <= ut-1 ) {//utは使っちゃだめ絶対
                                 //printf("%u From %u\n",(*vt)[0],(*vt)[1]);
+                                //listに突っ込む
+                                candidate.push_back( (*vt)[1] );
                                 ++vt;
                                 //printf("owari\n");
                             }
-                            //printf("出た\n");
+                            //COL個以上ユニークなら出力
+                            candidate.sort();
+                            candidate.unique();
+                            if( candidate.size() >= COL ) {
+                                for(list<uint32>::iterator ii=candidate.begin(); ii != candidate.end(); ++ii)
+                                    printf("%u From %u\n",thash(*ii), *ii);
+                            }
                         }
                         ++tt;
                     }
